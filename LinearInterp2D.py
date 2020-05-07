@@ -81,7 +81,7 @@ def LinearInterp2D( gridData    =None , pointData=None, size=None, gridDataType=
     # --- [3]   ライブラリをロード         --- #
     # ---------------------------------------- #
     #  -- [3-1] ライブラリを定義           --  #
-    path   = os.path.expanduser('~') + "/.python/lib/interpRoutines"
+    path   = os.path.expanduser('~') + "/.python/lib/nkInterpolator"
     pyLIB  = Flib.load_library( 'pylib.so', path )
     #  -- [3-2] 入出力管理                 --  #
     pyLIB.linearinterp2d_.argtypes = [

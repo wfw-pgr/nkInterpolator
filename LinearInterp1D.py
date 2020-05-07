@@ -36,7 +36,7 @@ def LinearInterp1D( xa=None, fa=None, xp=None, force_to_interpolate=False ):
     # --- [3]   ライブラリをロード         --- #
     # ---------------------------------------- #
     #  -- [3-1] ライブラリを定義           --  #
-    path   = os.path.expanduser('~') + "/.python/lib/interpRoutines"
+    path   = os.path.expanduser('~') + "/.python/lib/nkInterpolator"
     pyLIB  = Flib.load_library( 'pylib.so', path )
     #  -- [3-2] 入出力管理                 --  #
     pyLIB.linearinterp1d_.argtypes = [
