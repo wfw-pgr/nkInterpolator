@@ -1,6 +1,7 @@
 target = ../pylib.so
 object = \
-  linearInterp.f90
+  linearInterp.f90 \
+  barycentric__interpolator.f90 
 
 #FC = ifort
 FC = gfortran
