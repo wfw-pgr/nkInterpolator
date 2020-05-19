@@ -58,6 +58,17 @@ def barycentric__interpolator( nodes=None, points=None ):
     # ---------------------------------------- #
     pyLIB.barycentric__interpolator_( nodes_ , points_ , simplex_, pwhere_, \
                                       nNodes_, nPoints_, nSimplex_ )
+
+    # ------------------------------------------------- #
+    # --- [5] debug mode                            --- #
+    # ------------------------------------------------- #
+    # debugMode = False
+    # if ( debugMode ):
+    #     with open( "debug_pwhere.dat" , "w" ) as f:
+    #         np.savetxt( f, pwhere )
+    #     with open( "debug_simplex.dat", "w" ) as f:
+    #         np.savetxt( f, simplex )
+    
     return( points_ )
 
 

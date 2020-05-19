@@ -67,6 +67,7 @@ contains
 
     ! --  initial setup  -- !
     iN    = 1
+    i_min = iN
     d_min = sqrt( ( point(x_) - nodes(x_,iN) )**2 + ( point(y_) - nodes(x_,iN) )**2 )
     ! --  find nearest   -- !
     do iN=2, nNodes
