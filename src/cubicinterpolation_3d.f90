@@ -15,7 +15,7 @@ subroutine cubicinterpolation_3d( xRef, xItp, LI, LJ, LK, nItp )
   double precision                :: x1Min, x2Min, x3Min, dx1Inv, dx2Inv, dx3Inv, fi
   double precision, allocatable   :: xItp_norm(:), avec(:,:,:), pvec(:,:,:)
   logical                         :: Flag__OutOfIndex
-  logical, parameter              :: Flag__WarningDisplay    = .false.
+  logical, parameter              :: Flag__WarningDisplay    = .true.
   logical, parameter              :: Flag__saveMatrices      = .false.
   logical, parameter              :: Flag__StoreZeroValue    = .true.
   logical, parameter              :: Flag__StoreNearestPoint = .false.
@@ -66,7 +66,7 @@ subroutine cubicinterpolation_3d( xRef, xItp, LI, LJ, LK, nItp )
         if ( Flag__StoreZeroValue ) then
            xItp(x0_,ki) = 0.d0
            if ( Flag__WarningDisplay ) then
-              write(6,*) "[cubInterpMod] WARNING out of index Exception !! "
+              write(6,*) '[cubInterpMod] WARNING!! out-of-index Exception!!  :: (ip,jp,kp) == ', ip, jp, kp
            endif
            cycle
         endif
