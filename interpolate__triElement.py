@@ -5,9 +5,9 @@ import os.path
 import scipy.spatial    as spa
 
 # ================================================================ #
-# ===  interpolate__triElement                               === #
+# ===  interpolate__triElement                                 === #
 # ================================================================ #
-def interpolate__triElement( nodes=None, points=None ):
+def interpolate__triElement( nodes=None, points=None, outofregion="nearest" ):
     
     # ---------------------------------------- #
     # --- [1]   引数チェック               --- #
@@ -60,6 +60,11 @@ def interpolate__triElement( nodes=None, points=None ):
     pyLIB.barycentric__interpolator_( nodes_ , points_ , simplex_, pwhere_, \
                                       nNodes_, nPoints_, nSimplex_ )
 
+    if ( outofregion.lower() == "zero" ):
+        z_                = 2
+        index             = np.where( pwhere == -1 )
+        points_[index,z_] = 0.0
+        
     # ------------------------------------------------- #
     # --- [5] debug mode                            --- #
     # ------------------------------------------------- #
