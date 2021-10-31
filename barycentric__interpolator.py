@@ -78,20 +78,17 @@ def barycentric__interpolator( nodes=None, points=None ):
 # ========================================================= #
 
 if ( __name__=="__main__" ):
-    import nkUtilities.genArgs as gar
-    args    = gar.genArgs()
 
     # ------------------------------------------------- #
     # --- [1] grid data making                      --- #
     # ------------------------------------------------- #
-    
     import nkUtilities.equiSpaceGrid as esg
-    x1MinMaxNum = [ -1.0, 1.0, 21 ]
-    x2MinMaxNum = [ -1.0, 1.0, 21 ]
+    x1MinMaxNum = [ -1.0, 1.0, 201 ]
+    x2MinMaxNum = [ -1.0, 1.0, 201 ]
     grid        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      returnType = "point" )
     radii       = np.sqrt( grid[:,0]**2 + grid[:,1]**2 )
-    index       = np.where( radii < 1.0 )
+    index       = np.where( radii <= 1.0 )
     grid        = grid [index]
     radii       = radii[index]
     height      = ( np.cos( 0.5*np.pi*radii ) )**2
@@ -100,8 +97,7 @@ if ( __name__=="__main__" ):
     # ------------------------------------------------- #
     # --- [2] point data making                     --- #
     # ------------------------------------------------- #
-    
-    nPoints     = 1001
+    nPoints     = 10001
     points      = np.zeros( (nPoints,3) )
     points[:,0] = ( 1.0 - ( -1.0 ) ) * np.random.rand( nPoints ) + ( -1.0 ) 
     points[:,1] = ( 1.0 - ( -1.0 ) ) * np.random.rand( nPoints ) + ( -1.0 ) 
@@ -115,6 +111,14 @@ if ( __name__=="__main__" ):
 
     ret = barycentric__interpolator( nodes=gData, points=points )
 
-    import nkUtilities.cMapTri as cmt
-    cmt.cMapTri( xAxis=gData[:,0], yAxis=gData[:,1], cMap=gData[:,2], pngFile="png/out1.png" )
-    cmt.cMapTri( xAxis=  ret[:,0], yAxis=  ret[:,1], cMap=  ret[:,2], pngFile="png/out2.png" )
+    import nkUtilities.cMapTri      as cmt
+    import nkUtilities.load__config as lcf
+    config = lcf.load__config()
+    config["cmp_AutoLevel"]  = False
+    config["cmp_MaxMin"]     = [0.0,1.0]
+    config["cmp_xAutoRange"] = False
+    config["cmp_yAutoRange"] = False
+    config["cmp_xRange"]     = [-1.0,+1.0]
+    config["cmp_yRange"]     = [-1.0,+1.0]
+    cmt.cMapTri( xAxis=gData[:,0], yAxis=gData[:,1], cMap=gData[:,2], pngFile="png/out1.png", config=config )
+    cmt.cMapTri( xAxis=  ret[:,0], yAxis=  ret[:,1], cMap=  ret[:,2], pngFile="png/out2.png", config=config )

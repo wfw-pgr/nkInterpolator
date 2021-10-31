@@ -13,6 +13,7 @@ subroutine barycentric__interpolator( nodes , points , simplex, pwhere, &
   do ipt=1, nPoints
      
      if ( pwhere(ipt).eq.-1 ) then
+        ! -- use nearest point if the point is not enclosed by triangle. -- !
         call find__nearestpoint( nodes, points(:,ipt), nNodes )
      else
         ! -- simplex, pwhere :: begin from 0 -- !
