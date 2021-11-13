@@ -5,11 +5,14 @@ object = \
   cubicinterpolation_3d.f90 \
   interpolate__trilinear.f90
 
-#FC = ifort
 FC = gfortran
-
 FFLAGS  = -O3 -llapack -lblas
 LDFLAGS =
+
+#FC = ifort
+# FFLAGS  = -O3 -mkl
+# LDFLAGS =
+
 PYFLAGS = -shared -fPIC
 
 .SUFFIXES: .so .f90
