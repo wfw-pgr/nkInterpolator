@@ -61,6 +61,23 @@ def interpolate__bilinear( gridData    =None , pointData=None, size=None, gridDa
                 dy    = gridData[ 1,y_] - gridData[ 0,y_]
             gridData_ = np.copy( gridData[:,v_].reshape( (LJ,LI) ) )
     nData = pointData.shape[0]
+
+    # ------------------------------------------------- #
+    # --- [3] check shape information               --- #
+    # ------------------------------------------------- #
+    if ( pointData.shape[1] != 3 ):
+        if   ( pointData.shape[1] == 2 ):
+            print( "[interpolate__bilinear.py] pointData has 2 compoinents. add 3rd component." )
+            pointData = np.concatenate( [ pointData, np.zeros( (pointData.shape[0],1) ) ], axis=1 )
+        else:
+            print( "[interpolate__bilinear.py] pointData's shape is illegal... {0} [ERROR] ".format( pointData.shape ) )
+            sys.exit()
+    if ( gridData.ndim != 3 ):
+        print( "[interpolate__bilinear.py] gridData's shape is illegal... {0} [ERROR] ".format( gridData.shape ) )
+        sys.exit()
+    if ( gridData.shape[2] != 3 ):
+        print( "[interpolate__bilinear.py] gridData's shape is illegal... {0} [ERROR] ".format( gridData.shape ) )
+        sys.exit()
     
     # ---------------------------------------- #
     # --- [2]   引数準備                   --- #

@@ -7,7 +7,6 @@ import numpy as np
 # ========================================================= #
 
 def interpolate__grid2point( gridData=None, pointData=None, dim=None, method="linear", size=None ):
-
     # ------------------------------------------------- #
     # --- [1] Argument                              --- #
     # ------------------------------------------------- #
