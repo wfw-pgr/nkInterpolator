@@ -59,7 +59,7 @@ def interpolate__grid2point( gridData=None, pointData=None, dim=None, method="li
 
 if ( __name__=="__main__" ):
 
-    method = "cubic"
+    method = "linear"
     
     # ------------------------------------------------- #
     # --- [1] test ( 2D )                           --- #
