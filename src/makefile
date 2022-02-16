@@ -2,6 +2,7 @@ target = ../pylib.so
 object = \
   linearInterp.f90 \
   barycentric__interpolator.f90 \
+  interpolate__fromTriMesh.f90 \
   cubicinterpolation_3d.f90 \
   interpolate__trilinear.f90
 
@@ -13,11 +14,11 @@ LDFLAGS =
 # FFLAGS  = -O3 -mkl
 # LDFLAGS =
 
-PYFLAGS = -shared -fPIC
+PYFLAGS = -fPIC -shared 
 
 .SUFFIXES: .so .f90
 $(target): $(object)
-	$(FC) $(PYFLAGS) $(FFLAGS) $(LDFLAGS) -o $(target) $(object)
+	$(FC) -o $(target) $(LDFLAGS) $(PYFLAGS) $(FFLAGS) $(object)
 
 .PHONY:all clean
 clean:

@@ -17,8 +17,9 @@ subroutine cubicinterpolation_3d( xRef, xItp, LI, LJ, LK, nItp )
   logical                         :: Flag__OutOfIndex
   logical, parameter              :: Flag__WarningDisplay    = .true.
   logical, parameter              :: Flag__saveMatrices      = .false.
-  logical, parameter              :: Flag__StoreZeroValue    = .true.
-  logical, parameter              :: Flag__StoreNearestPoint = .false.
+  logical, parameter              :: Flag__StoreZeroValue    = .false.
+  logical, parameter              :: Flag__StoreNearestPoint = .true.
+  logical, parameter              :: Flag__LinearInterpolate = .false.
 
 
   ! ------------------------------------------------------ !
@@ -70,6 +71,14 @@ subroutine cubicinterpolation_3d( xRef, xItp, LI, LJ, LK, nItp )
            endif
            cycle
         endif
+        ! if ( Flag__LinearInterpolate ) then
+        !    if ( xItp_index(x1_,ki).le.1 ) then
+        !    ! xItp(x0_,ki) = 
+        !    if ( Flag__WarningDisplay ) then
+        !       write(6,*) '[cubInterpMod] WARNING!! out-of-index Exception!!  :: (ip,jp,kp) == ', ip, jp, kp
+        !    endif
+        !    cycle
+        ! endif
      endif
      do k=1, 4
         do j=1, 4
@@ -362,6 +371,28 @@ contains
     
     return
   end subroutine MatrixVectorMultiply
+
+
+  ! ! ====================================================== !
+  ! ! === linear interpolation at edge                   === !
+  ! ! ====================================================== !
+  ! subroutine interpolate__linear
+  !   implicit none
+  !   integer         , intent(in)  :: 
+  !   double precision, intent(out) :: 
+  !   if ( i_index.le.1 ) then
+  !      ( xItp(x_,ip) - xRef(x_,1,jk,kk) ) * ( xRef(v_,2,jk,kk) - xRef(v_,1,jk,kk) ) / ( xRef(x_,2,jk,kk) - xRef(x_,1,jk,kk) )
+  !      xRef(x_,)
+
+  !      .or.( i_index.ge.LI-1 ) ) Flag__OutOfIndex = .true.
+  !   if ( ( xItp_index(x2_,ki).le.1 ).or.( xItp_index(x2_,ki).ge.LJ-1 ) ) Flag__OutOfIndex = .true.
+  !   if ( ( xItp_index(x3_,ki).le.1 ).or.( xItp_index(x3_,ki).ge.LK-1 ) ) Flag__OutOfIndex = .true.
+    
+
+  !   return
+  ! end subroutine interpolate__linear
+
+  
     
 
 end subroutine cubicinterpolation_3d
