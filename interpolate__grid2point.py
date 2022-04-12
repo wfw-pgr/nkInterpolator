@@ -59,43 +59,45 @@ def interpolate__grid2point( gridData=None, pointData=None, dim=None, method="li
 
 if ( __name__=="__main__" ):
 
+    x_, y_, z_ = 0, 1, 2
+    
     method = "linear"
     
-    # ------------------------------------------------- #
-    # --- [1] test ( 2D )                           --- #
-    # ------------------------------------------------- #
+    # # ------------------------------------------------- #
+    # # --- [1] test ( 2D )                           --- #
+    # # ------------------------------------------------- #
     
-    import nkUtilities.equiSpaceGrid as esg
-    x1MinMaxNum = [ 0.0, 1.0, 11 ]
-    x2MinMaxNum = [ 0.0, 1.0, 11 ]
-    x3MinMaxNum = [ 0.0, 0.0,  1 ]
-    xRef        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
-                                     x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
-    xRef[...,2] = np.sqrt( xRef[...,0]**2 + xRef[...,1]**2 )
-    xRef        = np.reshape( xRef, (x2MinMaxNum[2],x1MinMaxNum[2],3) )
+    # import nkUtilities.equiSpaceGrid as esg
+    # x1MinMaxNum = [ 0.0, 1.0, 11 ]
+    # x2MinMaxNum = [ 0.0, 1.0, 11 ]
+    # x3MinMaxNum = [ 0.0, 0.0,  1 ]
+    # xRef        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
+    # xRef[...,2] = np.sqrt( xRef[...,0]**2 + xRef[...,1]**2 )
+    # xRef        = np.reshape( xRef, (x2MinMaxNum[2],x1MinMaxNum[2],3) )
     
-    x1MinMaxNum = [ 0.3, 0.7, 21 ]
-    x2MinMaxNum = [ 0.3, 0.7, 21 ]
-    x3MinMaxNum = [ 0.0, 0.0,  1 ]
-    xItp        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
-                                     x3MinMaxNum=x3MinMaxNum, returnType = "point" )
+    # x1MinMaxNum = [ 0.3, 0.7, 21 ]
+    # x2MinMaxNum = [ 0.3, 0.7, 21 ]
+    # x3MinMaxNum = [ 0.0, 0.0,  1 ]
+    # xItp        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "point" )
 
     
-    ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
-                                           method=method, dim=2 )
+    # ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
+    #                                        method=method, dim=2 )
 
-    Data        = np.zeros( (ret.shape[0],5) )
-    Data[:,0:3] = ret[:,0:3]
-    Data[:,  3] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 )
-    Data[:,  4] = Data[:,2] - Data[:,3]
+    # Data        = np.zeros( (ret.shape[0],5) )
+    # Data[:,0:3] = ret[:,0:3]
+    # Data[:,  3] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 )
+    # Data[:,  4] = Data[:,2] - Data[:,3]
 
-    outFile     = "out_2d.dat"
-    import nkUtilities.save__pointFile as spf
-    spf.save__pointFile( outFile=outFile, Data=Data )
+    # outFile     = "out_2d.dat"
+    # import nkUtilities.save__pointFile as spf
+    # spf.save__pointFile( outFile=outFile, Data=Data )
 
-    print()
-    print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,4] ) ) ) )
-    print()
+    # print()
+    # print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,4] ) ) ) )
+    # print()
 
     
 
@@ -109,16 +111,16 @@ if ( __name__=="__main__" ):
     x3MinMaxNum = [ 0.0, 1.0, 11 ]
     xRef_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
-    xRef        = np.zeros( (x3MinMaxNum[2],x2MinMaxNum[2],x1MinMaxNum[2],4) )
-    xRef[...,:3]= xRef_
-    xRef[..., 3]= np.sqrt( xRef_[...,0]**2 + xRef_[...,1]**2 + xRef_[...,2]**2 )
+    radii       = np.sqrt( xRef_[...,x_]**2 + xRef_[...,y_]**2 + xRef_[...,z_]**2 )
+    xRef        = np.concatenate( [xRef_,radii[:,:,:,None]], axis=-1 )
+    
     x1MinMaxNum = [ 0.3, 0.7, 21 ]
     x2MinMaxNum = [ 0.3, 0.7, 21 ]
     x3MinMaxNum = [ 0.3, 0.7, 21 ]
     xItp_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      x3MinMaxNum=x3MinMaxNum, returnType = "point" )
-    xItp        = np.zeros( (x3MinMaxNum[2]*x2MinMaxNum[2]*x1MinMaxNum[2],4) )
-    xItp[:,:3]  = np.copy( xItp_ )
+    value       = np.zeros( (x3MinMaxNum[2]*x2MinMaxNum[2]*x1MinMaxNum[2],1) )
+    xItp        = np.concatenate( [xItp_,value],axis=-1 )
 
     ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
                                            method=method, dim=3 )

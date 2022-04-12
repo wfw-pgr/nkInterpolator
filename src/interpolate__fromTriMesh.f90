@@ -51,7 +51,6 @@ subroutine interpolate__fromTriMesh( nodes, elems, points, nNodes, nElems, nPoin
            vertex(x_:z_,iN) = nodes( x_:z_,elems(iN,abs(enclose(elm_,iP)) ) )
         enddo
         call interpolate__trianglePoint( vertex, points(x_:z_,iP) )
-        write(6,*) points(:,iP)
      enddo
   end if
 
