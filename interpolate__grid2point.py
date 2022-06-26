@@ -1,6 +1,16 @@
 import os, sys
 import numpy   as np
 
+# ------------------------------------------------ #
+# --   interpolate gridData into pointData      -- #
+# ------------------------------------------------ #
+# --  [for 3D]                                  -- #
+# --   * gridData  :: [LK,LJ,LI,4]   (x,y,z,v)  -- #
+# --   * pointData :: [npt,4]                   -- #
+# --  [for 2D]                                  -- #
+# --   * gridData  :: [LJ,LI,3]      (x,y,v)    -- #
+# --   * pointData :: [npt,3]                   -- #
+# ------------------------------------------------ #
 
 # ========================================================= #
 # ===  interpolate__grid2point.py                       === #
@@ -61,79 +71,79 @@ if ( __name__=="__main__" ):
 
     x_, y_, z_ = 0, 1, 2
     
-    method = "linear"
+    method = "cubic"
     
-    # # ------------------------------------------------- #
-    # # --- [1] test ( 2D )                           --- #
-    # # ------------------------------------------------- #
-    
-    # import nkUtilities.equiSpaceGrid as esg
-    # x1MinMaxNum = [ 0.0, 1.0, 11 ]
-    # x2MinMaxNum = [ 0.0, 1.0, 11 ]
-    # x3MinMaxNum = [ 0.0, 0.0,  1 ]
-    # xRef        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
-    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
-    # xRef[...,2] = np.sqrt( xRef[...,0]**2 + xRef[...,1]**2 )
-    # xRef        = np.reshape( xRef, (x2MinMaxNum[2],x1MinMaxNum[2],3) )
-    
-    # x1MinMaxNum = [ 0.3, 0.7, 21 ]
-    # x2MinMaxNum = [ 0.3, 0.7, 21 ]
-    # x3MinMaxNum = [ 0.0, 0.0,  1 ]
-    # xItp        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
-    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "point" )
-
-    
-    # ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
-    #                                        method=method, dim=2 )
-
-    # Data        = np.zeros( (ret.shape[0],5) )
-    # Data[:,0:3] = ret[:,0:3]
-    # Data[:,  3] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 )
-    # Data[:,  4] = Data[:,2] - Data[:,3]
-
-    # outFile     = "out_2d.dat"
-    # import nkUtilities.save__pointFile as spf
-    # spf.save__pointFile( outFile=outFile, Data=Data )
-
-    # print()
-    # print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,4] ) ) ) )
-    # print()
-
-    
-
     # ------------------------------------------------- #
-    # --- [2] test ( 3D )                           --- #
+    # --- [1] test ( 2D )                           --- #
     # ------------------------------------------------- #
     
     import nkUtilities.equiSpaceGrid as esg
     x1MinMaxNum = [ 0.0, 1.0, 11 ]
     x2MinMaxNum = [ 0.0, 1.0, 11 ]
-    x3MinMaxNum = [ 0.0, 1.0, 11 ]
-    xRef_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    x3MinMaxNum = [ 0.0, 0.0,  1 ]
+    xRef        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
-    radii       = np.sqrt( xRef_[...,x_]**2 + xRef_[...,y_]**2 + xRef_[...,z_]**2 )
-    xRef        = np.concatenate( [xRef_,radii[:,:,:,None]], axis=-1 )
+    xRef[...,2] = np.sqrt( xRef[...,0]**2 + xRef[...,1]**2 )
+    xRef        = np.reshape( xRef, (x2MinMaxNum[2],x1MinMaxNum[2],3) )
     
     x1MinMaxNum = [ 0.3, 0.7, 21 ]
     x2MinMaxNum = [ 0.3, 0.7, 21 ]
-    x3MinMaxNum = [ 0.3, 0.7, 21 ]
-    xItp_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    x3MinMaxNum = [ 0.0, 0.0,  1 ]
+    xItp        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      x3MinMaxNum=x3MinMaxNum, returnType = "point" )
-    value       = np.zeros( (x3MinMaxNum[2]*x2MinMaxNum[2]*x1MinMaxNum[2],1) )
-    xItp        = np.concatenate( [xItp_,value],axis=-1 )
-
-    ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
-                                           method=method, dim=3 )
     
-    Data        = np.zeros( (ret.shape[0],6) )
-    Data[:,0:4] = ret[:,0:4]
-    Data[:,  4] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 + Data[:,2]**2 )
-    Data[:,  5] = Data[:,3] - Data[:,4]
+    ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
+                                           method=method, dim=2 )
 
-    outFile     = "out_3d.dat"
+    Data        = np.zeros( (ret.shape[0],5) )
+    Data[:,0:3] = ret[:,0:3]
+    Data[:,  3] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 )
+    Data[:,  4] = Data[:,2] - Data[:,3]
+
+    outFile     = "out_2d.dat"
+    names       = [ "x", "y", "interped", "answer", "diff" ]
     import nkUtilities.save__pointFile as spf
     spf.save__pointFile( outFile=outFile, Data=Data )
 
     print()
-    print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,5] ) ) ) )
+    print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,4] ) ) ) )
     print()
+
+    
+
+    # # ------------------------------------------------- #
+    # # --- [2] test ( 3D )                           --- #
+    # # ------------------------------------------------- #
+    
+    # import nkUtilities.equiSpaceGrid as esg
+    # x1MinMaxNum = [ 0.0, 1.0, 11 ]
+    # x2MinMaxNum = [ 0.0, 1.0, 11 ]
+    # x3MinMaxNum = [ 0.0, 1.0, 11 ]
+    # xRef_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "structured" )
+    # radii       = np.sqrt( xRef_[...,x_]**2 + xRef_[...,y_]**2 + xRef_[...,z_]**2 )
+    # xRef        = np.concatenate( [xRef_,radii[:,:,:,None]], axis=-1 )
+    
+    # x1MinMaxNum = [ 0.3, 0.7, 21 ]
+    # x2MinMaxNum = [ 0.3, 0.7, 21 ]
+    # x3MinMaxNum = [ 0.3, 0.7, 21 ]
+    # xItp_       = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
+    #                                  x3MinMaxNum=x3MinMaxNum, returnType = "point" )
+    # value       = np.zeros( (x3MinMaxNum[2]*x2MinMaxNum[2]*x1MinMaxNum[2],1) )
+    # xItp        = np.concatenate( [xItp_,value],axis=-1 )
+
+    # ret         = interpolate__grid2point( gridData=xRef, pointData=xItp, \
+    #                                        method=method, dim=3 )
+    
+    # Data        = np.zeros( (ret.shape[0],6) )
+    # Data[:,0:4] = ret[:,0:4]
+    # Data[:,  4] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 + Data[:,2]**2 )
+    # Data[:,  5] = Data[:,3] - Data[:,4]
+
+    # outFile     = "out_3d.dat"
+    # import nkUtilities.save__pointFile as spf
+    # spf.save__pointFile( outFile=outFile, Data=Data )
+
+    # print()
+    # print( " max( abs( diff ) ) == {0}".format( np.max( np.abs( Data[:,5] ) ) ) )
+    # print()

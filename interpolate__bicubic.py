@@ -3,10 +3,16 @@ import numpy.ctypeslib  as Flib
 import ctypes, sys
 import os.path
 
+# ------------------------------------------------ #
+# --   * gridData  :: [LJ,LI,3]      (x,y,v)    -- #
+# --   * pointData :: [npt,3]                   -- #
+# ------------------------------------------------ #
+
+
 # ================================================================ #
 # ===  interpolate__bicubic                                    === #
 # ================================================================ #
-def interpolate__bicubic( gridData=None, pointData=None ):
+def interpolate__bicubic( gridData=None, pointData=None, LK__no_of_copy_layer=5 ):
 
     x_,y_,z_,v_ = 0, 1, 2, 3
     
@@ -20,18 +26,21 @@ def interpolate__bicubic( gridData=None, pointData=None ):
     # --- [2]   引数準備                            --- #
     # ------------------------------------------------- #
     #  -- [2-1] 使用する引数を準備                  --  #
-    LI,LJ,LK   = gridData.shape[1],gridData.shape[0], 4
+    LI,LJ,LK   = gridData.shape[1],gridData.shape[0], LK__no_of_copy_layer
     nItp       = pointData.shape[0]
 
     xRef_      = np.zeros( (LK,LJ,LI,4) )
-    xItp_      = np.zeros( (nItp,4) )
+    xItp_      = np.zeros( (nItp,4)     )
+    zcoord     = np.linspace( -2.0, 2.0, LK__no_of_copy_layer )
+
     for ik in range( LK ):
         xRef_[ik,:,:,x_] = np.copy( gridData[:,:,0] )
         xRef_[ik,:,:,y_] = np.copy( gridData[:,:,1] )
-        xRef_[ik,:,:,z_] = float( ik-2 )
+        xRef_[ik,:,:,z_] = zcoord[ik]
         xRef_[ik,:,:,v_] = np.copy( gridData[:,:,2] )
         xItp_[:,x_]      = np.copy( pointData[:,0] )
         xItp_[:,y_]      = np.copy( pointData[:,1] )
+        xItp_[:,z_]      = 0.0
 
     #  -- [2-2] Fortranサイズへ変換                 --  #
     xRef_      =     np.array( xRef_ , dtype=np.float64  )
@@ -90,11 +99,13 @@ if ( __name__=='__main__' ):
     xItp        = esg.equiSpaceGrid( x1MinMaxNum=x1MinMaxNum, x2MinMaxNum=x2MinMaxNum, \
                                      x3MinMaxNum=x3MinMaxNum, returnType = "point" )
     ret         = interpolate__bicubic( gridData=xRef, pointData=xItp )
-    Data        = np.zeros( (ret.shape[0],4) )
-    Data[:,0:3] = ret[:,0:3]
+    Data        = np.zeros( (ret.shape[0],5) )
+    Data[:,0:3] = np.copy( ret[:,0:3] )
     Data[:,  3] = np.sqrt( Data[:,0]**2 + Data[:,1]**2 )
+    Data[:,  4] = Data[:,2] - Data[:,3]
 
     outFile     = "out.dat"
+    names       = [ "x", "y", "interped", "answer", "diff" ]
     import nkUtilities.save__pointFile as spf
     spf.save__pointFile( outFile=outFile, Data=Data )
 
