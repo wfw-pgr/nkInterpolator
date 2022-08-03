@@ -8,7 +8,9 @@ object = \
 
 FC = gfortran
 FFLAGS  = -O3 -llapack -lblas
-LDFLAGS =
+LDFLAGS = 
+ARCHIVE = 
+# ARCHIVE = /usr/local/lib/libopenblas.a
 
 #FC = ifort
 # FFLAGS  = -O3 -mkl
@@ -18,7 +20,7 @@ PYFLAGS = -fPIC -shared
 
 .SUFFIXES: .so .f90
 $(target): $(object)
-	$(FC) -o $(target) $(LDFLAGS) $(PYFLAGS) $(FFLAGS) $(object)
+	$(FC) -o $(target) $(LDFLAGS) $(PYFLAGS) $(FFLAGS) $(object) $(ARCHIVE)
 
 .PHONY:all clean
 clean:
